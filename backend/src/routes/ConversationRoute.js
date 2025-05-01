@@ -13,6 +13,7 @@ import { Auth } from "../middlewares/AuthMiddleware.js";
 import {
   createConversation,
   createUserConversation,
+  deleteConversation,
   getAllConversation,
   searchConversation,
   updateConversation,
@@ -44,6 +45,6 @@ router.route("/:oldgroupUserName/update").post(
 );
 router.route("/").get(Auth, getAllConversation);
 router.route("/search").post(Auth, searchConversation);
-
+router.route("/:conversationId/delete").post(Auth, deleteConversation);
 router.route("/user/create").post(Auth, createUserConversation, addparticipant);
 export default router;

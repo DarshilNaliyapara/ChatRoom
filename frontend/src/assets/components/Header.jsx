@@ -41,63 +41,64 @@ export default function Header() {
   }, []);
 
   return (
-    <>
-    
-      <div className="p-6 flex flex-row items-center justify-between space-x-4 z-50">
-        <div className="text-center mt-4 text-4xl font-semibold text-gray-100">
-          <label>{pageTitle}</label>
+    <header className="bg-gray-900/50 backdrop-blur p-4">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+        {/* Page Title */}
+        <div className="text-center md:text-left text-2xl font-semibold text-gray-100 mb-4 md:mb-0">
+          {pageTitle}
         </div>
+
+        {/* Navigation */}
+        <nav className="flex items-center space-x-6">
+          <NavItem
+            icon="https://img.icons8.com/ios-filled/50/home.png"
+            label="Home"
+            to="/"
+          />
+          <NavItem
+            icon="https://img.icons8.com/ios-filled/50/search.png"
+            label="Search"
+            to="/search"
+          />
+          <NavItem
+            icon="https://img.icons8.com/ios-filled/50/user.png"
+            label="Profile"
+            to="/profile"
+          />
+        </nav>
+
+        {/* User Section */}
         <div className="flex items-center space-x-4">
           {!user ? (
             <Link
               to="/login"
-              className="px-4 py-2 text-black bg-gray-200 mr-2 hover:bg-gray-400 rounded-md text-sm"
+              className="px-4 py-2 text-white bg-gray-700 hover:bg-gray-600 rounded-md text-sm"
             >
               Login
             </Link>
           ) : (
-            <>
-              <div className="flex items-center space-x-2">
-                <img
-                  src={user.avatarUrl || "https://via.placeholder.com/40"}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-                <div className="text-sm text-gray-100">
-                  <div className="font-semibold">
-                    {user.displayName || user.name}
-                  </div>
-                  <div className="text-gray-300">{user.email}</div>
+            <div className="flex items-center space-x-4">
+              <img
+                src={user.avatarUrl || "https://via.placeholder.com/40"}
+                alt="Profile"
+                className="w-10 h-10 rounded-full"
+              />
+              <div className="text-sm text-gray-100">
+                <div className="font-semibold">
+                  {user.displayName || user.name}
                 </div>
+                <div className="text-gray-400">{user.email}</div>
               </div>
-              <Link
+              <button
                 onClick={logout}
-                className="px-4 py-2 text-black bg-gray-200 mr-2 hover:bg-gray-400 rounded-md text-sm"
+                className="px-4 py-2 text-white bg-gray-700 hover:bg-gray-600 rounded-md text-sm"
               >
                 Logout
-              </Link>
-            </>
+              </button>
+            </div>
           )}
         </div>
       </div>
-      {/* Bottom Nav Bar */}
-      <div className="fixed z-40 bottom-6 left-1/2 hover:scale-110 transition-transform duration-150 -translate-x-1/2 px-6 py-3 w-auto max-w-4xl flex items-center justify-center gap-6 backdrop-blur bg-white/20 shadow rounded-full">
-        <NavItem
-          icon="https://img.icons8.com/ios-filled/50/home.png"
-          label="Home"
-          to="/"
-        />
-        <NavItem
-          icon="https://img.icons8.com/ios-filled/50/search.png"
-          label="Search"
-          to="/search"
-        />
-        <NavItem
-          icon="https://img.icons8.com/ios-filled/50/user.png"
-          label="Profile"
-          to="/profile"
-        />
-      </div>
-    </>
+    </header>
   );
 }

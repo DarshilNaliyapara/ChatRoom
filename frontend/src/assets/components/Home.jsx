@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchCurrentUser } from "./fetchCurrentUser";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 export default function Home() {
   const [conversations, setConversations] = useState([]);
@@ -24,6 +25,7 @@ export default function Home() {
       console.error("Error fetching data:", error);
     }
   };
+
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
@@ -78,12 +80,34 @@ export default function Home() {
     }
   };
 
+  const handleDelete = async (conversationId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/conversation/${conversationId}/delete`,
+        {
+          method: "post",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        fetchData();
+      } else {
+        console.error("Failed to delete conversation");
+      }
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+    }
+  };
+
   return (
     <div className="p-4">
       <div className="mb-5 flex flex-col md:flex-row gap-4">
         <input
           type="text"
-          placeholder="Search for users..."
+          placeholder="Search for Conversation..."
           value={query}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -91,14 +115,8 @@ export default function Home() {
               handleSearch();
             }
           }}
-          className="flex-1 p-3 border border-gray-300 rounded-lg text-lg"
+          className="flex-1 p-3 border border-gray-300/20 backdrop-blur text-white rounded-lg text-lg"
         />
-        <button
-          onClick={handleSearch}
-          className="p-3 bg-blue-500 text-white rounded-lg text-lg hover:bg-blue-700 transition-colors"
-        >
-          Search
-        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -118,24 +136,34 @@ export default function Home() {
                   conversation.conversationUserName === userName
                     ? conversation.conversationName
                     : displayName,
-
-                members:
-                  conversation.isGroupChat === true
-                    ? conversation.participants.length
-                    : "",
+                members: conversation.isGroupChat
+                  ? conversation.participants.length
+                  : "",
               }}
+              className="relative flex flex-col items-center p-4 bg-gray-800/30 backdrop-blur rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer group"
             >
-              <div className="flex flex-col items-center p-4 bg-gray-800 rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer">
-                <img
-                  src={avatarUrl}
-                  alt={displayName}
-                  className="w-24 h-24 rounded-full object-cover mb-3"
+              <img
+                src={avatarUrl}
+                alt={displayName}
+                className="w-24 h-24 rounded-full object-cover mb-3"
+              />
+              <h2 className="text-lg font-semibold text-gray-100 text-center">
+                {displayName}
+              </h2>
+              <p className="text-sm text-gray-400 text-center">@{userName}</p>
+
+              {!conversation.isGroupChat && (
+                <DeleteForeverIcon
+                  color="error"
+                  sx={{ fontSize: 45 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleDelete(conversation._id);
+                  }}
+                  className="absolute top-2 right-2 p-2 rounded-full transition-all opacity-0 group-hover:opacity-100"
                 />
-                <h2 className="text-lg font-semibold text-gray-100 text-center">
-                  {displayName}
-                </h2>
-                <p className="text-sm text-gray-400 text-center">@{userName}</p>
-              </div>
+              )}
             </Link>
           );
         })}

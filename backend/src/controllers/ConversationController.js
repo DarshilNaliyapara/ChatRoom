@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/FileUpload.js";
 import { Conversation } from "../models/Conversation.js";
 import { Participant } from "../models/Participants.js";
+import { Message } from "../models/Message.js";
 
 const createConversation = asyncHandler(async (req, res, next) => {
   try {
@@ -299,7 +300,6 @@ const updateConversation = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, "Group updated successfully"));
-      
   } catch (error) {
     return res
       .status(500)
@@ -420,10 +420,53 @@ const searchConversation = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteConversation = asyncHandler(async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const currentUser = req.user;
+
+    if (!conversationId) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, "Conversation ID required"));
+    }
+
+    const conversation = await Conversation.findById(conversationId);
+    console.log(conversation);
+    if (!conversation) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, "Conversation not found"));
+    }
+
+    if (conversation.admin?.toString() !== currentUser._id.toString() && 0) {
+      return res.status(403).json(new ApiResponse(403, "Unauthorized action"));
+    }
+
+    await Message.deleteMany({ conversation: conversationId });
+    await Participant.deleteMany({ conversation: conversationId });
+    await Conversation.deleteOne({ _id: conversationId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Conversation deleted successfully"));
+  } catch (error) {
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          "An error occurred while deleting the conversation",
+          error.message
+        )
+      );
+  }
+});
 export {
   createConversation,
   updateConversation,
   getAllConversation,
   createUserConversation,
   searchConversation,
+  deleteConversation,
 };

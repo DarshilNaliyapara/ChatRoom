@@ -71,14 +71,8 @@ const Search = () => {
               handleSearch();
             }
           }}
-          className="w-full p-3 mb-2 border border-gray-300 rounded-lg text-lg"
+          className="w-full p-3 mb-2 border text-gray-200 bg-gray-900/20 backdrop-blur border-gray-300 rounded-lg text-lg"
         />
-        <button
-          onClick={handleSearch}
-          className="w-full p-3 bg-blue-500 text-white rounded-lg text-lg hover:bg-blue-700 transition-colors"
-        >
-          Search
-        </button>
       </div>
 
       {users.data?.length > 0 ? (
@@ -104,7 +98,7 @@ const Search = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-600 text-lg">
+        <p className="text-center text-gray-400 text-lg">
           {users.message || "No users found."}
         </p>
       )}

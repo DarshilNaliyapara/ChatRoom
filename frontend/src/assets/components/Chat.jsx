@@ -39,8 +39,6 @@ export default function Chat() {
     }
   };
 
-  
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -90,8 +88,8 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-gray-200">
-      <div className="p-4 bg-gray-800 shadow-md flex items-center justify-between sticky top-0 z-10">
+    <div className="flex flex-col h-screen bg-gray-900/50 backdrop-blur text-gray-200">
+      <div className="p-4 bg-gray-800/40 backdrop-blur shadow-md flex items-center justify-between sticky top-0 z-10">
         <h1 className="text-xl font-bold text-gray-100">
           Chat with{" "}
           <span className="text-blue-400">
@@ -103,7 +101,7 @@ export default function Chat() {
       {/* Chat Container */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-800"
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-800/40 backdrop-blur"
       >
         {messages.length > 0 ? (
           messages.map((msg) => {
@@ -164,11 +162,11 @@ export default function Chat() {
       {/* Message Input */}
       <form
         onSubmit={handleSendMessage}
-        className="p-4 bg-gray-800 shadow-inner flex gap-2 items-center"
+        className="p-4 bg-gray-800/50 backdrop-blur shadow-inner flex gap-2 items-center"
       >
         <input
           type="text"
-          className="flex-1 border border-gray-600 bg-gray-700 text-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-1 border border-gray-600 bg-gray-700/30 backdrop-blur text-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Type your message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
