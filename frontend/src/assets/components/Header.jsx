@@ -1,14 +1,13 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import NavItem from "./Navitem.jsx";
+import NavItem from "./NavItem.jsx";
 import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 
-const cookies = new Cookies();
+
 
 export default function Header() {
   const location = useLocation();
   const [user, setUser] = useState("");
-  const [token, setToken] = useState("");
 
   // Convert pathname to a title (e.g. "/about" => "About")
   const getPageTitle = (path) => {
@@ -20,7 +19,7 @@ export default function Header() {
   const pageTitle = getPageTitle(location.pathname);
 
   const logout = async () => {
-    const response = await fetch("http://localhost:8000/api/v1/user/logout", {
+   await fetch("http://localhost:8000/api/v1/user/logout", {
       method: "POST",
       credentials: "include",
     });
