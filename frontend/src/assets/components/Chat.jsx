@@ -3,13 +3,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { fetchCurrentUser } from "./fetchCurrentUser.js";
 
 export default function Chat() {
-  const { conversationUserName } = useParams();
+  
   const [messages, setMessages] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [newMessage, setNewMessage] = useState("");
   const location = useLocation();
   const conversationName = location.state?.displayName;
+  const conversationUserName = location.state?.userName;
   const members = location.state?.members || [];
   const chatContainerRef = useRef(null);
 

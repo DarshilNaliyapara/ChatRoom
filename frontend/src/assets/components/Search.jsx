@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 const Search = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState({});
-
-  const navigate = useNavigate(); // <-- Add this
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
@@ -20,6 +20,7 @@ const Search = () => {
       body: JSON.stringify({ userName: query }),
     });
     const data = await response.json();
+    setError("")
     setUsers(data);
     console.log("Searching for:", query);
   };
@@ -41,13 +42,18 @@ const Search = () => {
     );
     const data = await response.json();
     console.log(data);
+    if (data.success == false) {
+      setError(data.message)
+    }
     if (data.statusCode === 409 || data.statusCode === 200) {
       const conversationUserName =
         data?.data?.conversation?.conversationUserName;
+        console.log("Conversation User Name:", conversationUserName);
       if (conversationUserName) {
-        navigate(`/chat/${conversationUserName}`, {
+        navigate(`/chat`, {
           state: {
             displayName: displayName,
+            userName: conversationUserName,
             members: "",
           },
         });
@@ -74,7 +80,9 @@ const Search = () => {
           className="w-full p-3 mb-2 border text-gray-200 bg-gray-900/20 backdrop-blur border-gray-300 rounded-lg text-lg"
         />
       </div>
-
+      {error && (
+        <p className="text-red-500 text-lg mb-4">{error}</p>
+        )}
       {users.data?.length > 0 ? (
         <div className="bg-gray-100 rounded-lg p-3">
           {users.data.map((user) => (

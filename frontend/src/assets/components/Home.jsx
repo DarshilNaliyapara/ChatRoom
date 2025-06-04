@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchCurrentUser } from "./fetchCurrentUser";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Button } from "@mui/material";
 
 export default function Home() {
   const [conversations, setConversations] = useState([]);
@@ -32,10 +33,12 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
-  }, [query === ""]);
+  },[]);
 
   useEffect(() => {
-    handleSearch();
+    if (query) {
+      handleSearch();
+    }
   }, [query]);
 
   const getConversationInfo = (conversation, currentUser) => {
@@ -46,7 +49,7 @@ export default function Home() {
       participants,
     } = conversation;
 
-    if (conversationUserName === currentUser?.userName) {
+    if (conversationUserName.split('_')[1] === currentUser?.userName || conversationUserName.split('_')[0] === currentUser?.userName) {
       const otherUser = participants.find((u) => u._id !== currentUser?._id);
       return {
         displayName: otherUser?.displayName || "Unknown User",
@@ -104,7 +107,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <div className="mb-5 flex flex-col md:flex-row gap-4">
+      <div className="mb-5 flex flex-col md:flex-row gap-4 justify-between items-center">
         <input
           type="text"
           placeholder="Search for Conversation..."
@@ -115,8 +118,13 @@ export default function Home() {
               handleSearch();
             }
           }}
-          className="flex-1 p-3 border border-gray-300/20 backdrop-blur text-white rounded-lg text-lg"
+          className="bg-gradient-to-r from-indigo-500/10 to-sky-400/10 flex-1 p-3 border border-gray-300/20 backdrop-blur text-white rounded-lg text-lg"
         />
+        <button
+            className="bg-gradient-to-r from-indigo-500 to-sky-400 text-white font-semibold rounded-xl px-6 py-3 shadow-lg text-lg hover:from-indigo-400 hover:to-sky-300 transition"
+          >
+            Create Group
+          </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -130,12 +138,10 @@ export default function Home() {
           return (
             <Link
               key={_id}
-              to={`/chat/${conversation.conversationUserName}`}
+              to={`/chat`}
               state={{
-                displayName:
-                  conversation.conversationUserName === userName
-                    ? conversation.conversationName
-                    : displayName,
+                displayName: displayName,
+                userName: conversation.conversationUserName,
                 members: conversation.isGroupChat
                   ? conversation.participants.length
                   : "",
@@ -153,6 +159,7 @@ export default function Home() {
               <p className="text-sm text-gray-400 text-center">@{userName}</p>
 
               {!conversation.isGroupChat && (
+                <>
                 <DeleteForeverIcon
                   color="error"
                   sx={{ fontSize: 45 }}
@@ -163,6 +170,7 @@ export default function Home() {
                   }}
                   className="absolute top-2 right-2 p-2 rounded-full transition-all opacity-0 group-hover:opacity-100"
                 />
+                </>
               )}
             </Link>
           );

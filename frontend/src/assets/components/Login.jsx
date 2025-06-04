@@ -6,7 +6,7 @@ const Login = () => {
     email: "",
     password: "",
   });
-
+const [error, setError] = useState(""); 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -25,10 +25,11 @@ const Login = () => {
         credentials: "include",
         body: JSON.stringify(formData),
       });
+      const data = await response.json();
       if (!response.ok) {
+        setError(data.message);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
       window.location.href = "/";
     } catch (error) {
       console.error("Error during login:", error);
@@ -90,7 +91,11 @@ const Login = () => {
           Login
         </button>
       </form>
+        {error && (
+        <p className="text-red-500 text-center mt-4">{error}</p>
+      )}  
     </div>
+
   );
 };
 

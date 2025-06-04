@@ -91,125 +91,25 @@ const createUserConversation = asyncHandler(async (req, res, next) => {
         .json(new ApiResponse(400, "You cannot chat with yourself"));
     }
     let createdGroup;
+    let conversationuserName = `${currentUser.userName}_${userName}`
     const existOrNot = await Conversation.findOne({
-      conversationUserName: userName,
+      conversationUserName: conversationuserName,
     });
 
     if (existOrNot) {
-      const participantExists = await Participant.findOne({
-        conversation: existOrNot._id,
-        participant: currentUser._id,
-      });
-
-      if (participantExists) {
         return res.status(409).json(
           new ApiResponse(409, "Conversation already exists", {
             conversation: existOrNot,
           })
         );
-      } else {
-        const conversation = await Participant.aggregate([
-          {
-            $match: {
-              participant: { $in: [currentUser._id, otheruser._id] },
-            },
-          },
-          {
-            $group: {
-              _id: "$conversation",
-              participants: { $addToSet: "$participant" },
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $match: {
-              count: { $gte: 2 }, // both users are part of the conversation
-            },
-          },
-          {
-            $lookup: {
-              from: "conversations", // this must match the actual MongoDB collection name
-              localField: "_id",
-              foreignField: "_id",
-              as: "conversation",
-            },
-          },
-          { $unwind: "$conversation" },
-          {
-            $match: {
-              "conversation.isGroupChat": false,
-            },
-          },
-        ]);
-        console.log(conversation);
-        if (conversation.length > 0) {
-          return res.status(409).json(
-            new ApiResponse(409, "Conversation already exists", {
-              conversation: conversation[0].conversation,
-            })
-          );
-        } else {
-          const user = await User.findById(currentUser._id);
+    } 
+      const user = await User.findById(currentUser._id);
           createdGroup = await Conversation.create({
-            conversationName: user.displayName,
-            conversationUserName: user.userName,
+            conversationName: otheruser.displayName,
+            conversationUserName: conversationuserName,
             isGroupChat: false,
-            profileImage: user.avatarUrl,
+            profileImage: otheruser.avatarUrl || "",
           });
-        }
-      }
-    } else {
-      const conversation = await Participant.aggregate([
-        {
-          $match: {
-            participant: { $in: [currentUser._id, otheruser._id] },
-          },
-        },
-        {
-          $group: {
-            _id: "$conversation",
-            participants: { $addToSet: "$participant" },
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $match: {
-            count: { $gte: 2 }, // both users are part of the conversation
-          },
-        },
-        {
-          $lookup: {
-            from: "conversations", // this must match the actual MongoDB collection name
-            localField: "_id",
-            foreignField: "_id",
-            as: "conversation",
-          },
-        },
-        { $unwind: "$conversation" },
-        {
-          $match: {
-            "conversation.isGroupChat": false,
-          },
-        },
-      ]);
-
-      if (conversation.length > 0) {
-        return res.status(409).json(
-          new ApiResponse(409, "Conversation already exists", {
-            conversation: conversation[0].conversation,
-          })
-        );
-      } else {
-        const user = await User.findOne({ userName: userName });
-
-        createdGroup = await Conversation.create({
-          conversationName: user.displayName,
-          conversationUserName: user.userName,
-          isGroupChat: false,
-          profileImage: user.avatarUrl,
-        });
-      }
-    }
 
     const group = await Conversation.findById(createdGroup._id);
 
