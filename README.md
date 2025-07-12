@@ -1,6 +1,6 @@
 # ChatRoom
 
-A real-time web chat application with multiple chat-room support, built using \[Your Tech Stack: e.g., Node.js, Socket.IO, Express, React].
+A real-time web chat application with multiple chat-room support, built using \[Node.js, Socket.IO, Express, React].
 
 ## 🚀 Features
 
@@ -9,7 +9,7 @@ A real-time web chat application with multiple chat-room support, built using \[
 * **User presence**: See when users join or leave a room
 * **Message history**: Scroll through past messages in the current session
 * **Responsive UI**: Clean and mobile-friendly design
-* **Secure hashing** (if included): Passwords hashed using bcrypt
+* **Secure hashing** : Passwords hashed using bcrypt
 
 ## 💠 Tech Stack
 
@@ -17,19 +17,17 @@ A real-time web chat application with multiple chat-room support, built using \[
 | ---------------- | --------------------------- |
 | Backend          | Node.js, Express            |
 | WebSockets       | Socket.IO                   |
-| Frontend         | React / Vue / Plain JS      |
-| UI Framework     | Bootstrap / Material-UI     |
+| Frontend         | React / Vue                 |
+| UI Framework     | Tailwind / Material-UI      |
 | Database\*       | MongoDB / MySQL / In-Memory |
-| Authentication\* | JWT / Session / None        |
-
-*\* Optional based on your project.*
+| Authentication\* | JWT / Session               |
 
 ## 📦 Getting Started
 
 ### Prerequisites
 
 * [Node.js](https://nodejs.org/) v14+
-* [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
+* [npm](https://www.npmjs.com/) 
 
 ### Installation
 
@@ -67,7 +65,7 @@ npm run server
 npm start
 ```
 
-Navigate to `http://localhost:3000` (or the port you configured).
+Navigate to `http://localhost:3000`.
 
 ## 🎯 Usage
 
